@@ -1,0 +1,38 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ cheese.name }}{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">{{ cheese.name }}</h1>
+
+  <ul class="list-group mb-4">
+    <li class="list-group-item"><strong>Тип:</strong> {{ cheese.cheese_type.name }}</li>
+    <li class="list-group-item"><strong>Цена за единицу:</strong> {{ cheese.price }} ₽</li>
+    <li class="list-group-item"><strong>Цена мелкий опт:</strong>
+      {% if cheese.price_small_opt %}
+        {{ cheese.price_small_opt }} ₽ от {{ cheese.min_qty_small_opt }} шт.
+      {% else %}
+        Нет скидки
+      {% endif %}
+    </li>
+    <li class="list-group-item"><strong>Цена крупный опт:</strong>
+      {% if cheese.price_big_opt %}
+        {{ cheese.price_big_opt }} ₽ от {{ cheese.min_qty_big_opt }} шт.
+      {% else %}
+        Нет скидки
+      {% endif %}
+    </li>
+    <li class="list-group-item"><strong>Вес:</strong> {{ cheese.weight }} г</li>
+    <li class="list-group-item"><strong>В наличии:</strong> {{ cheese.in_stock|yesno:"Да,Нет" }}</li>
+    <li class="list-group-item"><strong>Дата производства:</strong> {{ cheese.production_date }}</li>
+  </ul>
+
+  {% if user.is_authenticated and user.role == 'admin' %}
+    <a href="{% url 'cheese_edit' cheese.id %}" class="btn btn-warning">✏️ Редактировать</a>
+    <a href="{% url 'cheese_delete' cheese.id %}" class="btn btn-danger">🗑️ Удалить</a>
+  {% elif user.is_authenticated and user.role == 'product_manager' %}
+    <a href="{% url 'cheese_edit' cheese.id %}" class="btn btn-warning">✏️ Редактировать</a>
+  {% endif %}
+
+  <a href="{% url 'cheese_list' %}" class="btn btn-secondary">← Назад</a>
+{% endblock %}

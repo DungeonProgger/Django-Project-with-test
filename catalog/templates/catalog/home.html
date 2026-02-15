@@ -1,0 +1,69 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Каталог сыров{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Каталог сыров</h1>
+
+
+
+  <form method="get" class="row g-3 mb-4 align-items-end" id="filter-form">
+    <div class="col-md-4">
+      <input type="text" name="q" class="form-control" placeholder="Поиск по названию..." value="{{ request.GET.q }}">
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" name="type" onchange="document.getElementById('filter-form').submit();">
+        <option value="">Все типы</option>
+        {% for type in cheese_types %}
+          <option value="{{ type.id }}" {% if type.id|stringformat:"s" == selected_type %}selected{% endif %}>
+            {{ type.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" name="order_by" onchange="document.getElementById('filter-form').submit();">
+        <option value="name" {% if order_by == 'name' %}selected{% endif %}>По имени</option>
+        <option value="price" {% if order_by == 'price' %}selected{% endif %}>По цене</option>
+        <option value="weight" {% if order_by == 'weight' %}selected{% endif %}>По весу</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select class="form-select" name="in_stock" onchange="document.getElementById('filter-form').submit();">
+        <option value="">Все товары</option>
+        <option value="true" {% if in_stock == 'true' %}selected{% endif %}>В наличии</option>
+        <option value="false" {% if in_stock == 'false' %}selected{% endif %}>Нет в наличии</option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-warning">🔍 Найти</button>
+      {% if selected_type or query or in_stock %}
+        <a href="{% url 'cheese_list' %}" class="btn btn-outline-secondary">Сбросить</a>
+      {% endif %}
+    </div>
+  </form>
+
+  {% if cheeses %}
+    <ul class="list-group shadow-sm">
+      {% for cheese in cheeses %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div style="flex-grow: 1;">
+            <strong><a href="{% url 'cheese_detail' cheese.id %}" class="link-dark">{{ cheese.name }}</a></strong>
+            — {{ cheese.price }} ₽, {{ cheese.weight }} г
+          </div>
+          <div>
+            <span class="badge bg-warning text-dark" style="flex-shrink: 0;">
+              {{ cheese.cheese_type.name }}
+            </span>
+            <span class="badge bg-success text-light" {% if not cheese.in_stock %}style="background-color: #dc3545;"{% endif %}>
+              {% if cheese.in_stock %}В наличии{% else %}Нет в наличии{% endif %}
+            </span>
+
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-warning mt-4">Ничего не найдено 😢</div>
+  {% endif %}
+{% endblock %}

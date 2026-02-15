@@ -1,0 +1,31 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Мои партии{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Мои партии</h1>
+
+  <a href="{% url 'batch_create' %}" class="btn btn-warning mb-4">Создать новую партию</a>
+
+  {% if batches %}
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      {% for batch in batches %}
+        <div class="col">
+          <div class="card shadow-sm h-100">
+            <div class="card-body d-flex flex-column justify-content-between">
+              <div>
+                <h5 class="card-title">Партия #{{ batch.id }}</h5>
+                <p class="card-text mb-1"><strong>Менеджер:</strong> {{ batch.manager.username }}</p>
+                <p class="card-text mb-1"><strong>Создана:</strong> {{ batch.created_at|date:"d.m.Y H:i" }}</p>
+                <p class="card-text"><strong>Скидка:</strong> {{ batch.total_discount_percent }} %</p>
+              </div>
+              <a href="{% url 'batch_detail' batch.id %}" class="btn btn-warning mt-3 align-self-start">Открыть</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Партии не найдены.</p>
+  {% endif %}
+{% endblock %}

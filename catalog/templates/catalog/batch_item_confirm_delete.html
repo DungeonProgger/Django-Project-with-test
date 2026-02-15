@@ -1,0 +1,14 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Удалить товар из партии #{{ batch.id }}{% endblock %}
+
+{% block content %}
+  <h1>Удалить товар из партии #{{ batch.id }}</h1>
+  <p>Вы уверены, что хотите удалить товар <strong>{{ item.cheese.name }}</strong> (количество: {{ item.quantity }})?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Удалить</button>
+    <a href="{% url 'batch_detail' batch.id %}" class="btn btn-secondary ms-2">Отмена</a>
+  </form>
+{% endblock %}

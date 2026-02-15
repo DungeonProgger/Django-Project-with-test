@@ -1,0 +1,14 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Добавить товар в партию #{{ batch.id }}{% endblock %}
+
+{% block content %}
+  <h1>Добавить товар в партию #{{ batch.id }}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-warning">Добавить</button>
+    <a href="{% url 'batch_detail' batch.id %}" class="btn btn-secondary ms-2">Отмена</a>
+  </form>
+{% endblock %}
